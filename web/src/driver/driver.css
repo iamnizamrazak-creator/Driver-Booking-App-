@@ -1,0 +1,10 @@
+/* Driver app: evening palette so drivers never confuse it with the customer app. */
+.driver-app .btn { background: #2a1b3d; }
+.driver-app .btn:hover { background: #3c2856; }
+.driver-app .btn.gold { background: var(--gold); color: #2a1b3d; }
+.driver-app .btn.ghost, .driver-app .btn.danger { background: transparent; }
+.driver-app .btn.ghost { color: #2a1b3d; }
+.driver-app .nav button.on { color: #2a1b3d; }
+.status-line { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+.status-line .dot { width: 10px; height: 10px; }
+.trip-stage { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); }

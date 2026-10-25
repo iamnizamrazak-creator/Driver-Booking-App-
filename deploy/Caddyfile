@@ -1,0 +1,6 @@
+# /etc/caddy/Caddyfile — Caddy gets and renews HTTPS certificates automatically.
+# Point your domain's A record at the VPS first.
+app.example.in {
+	encode gzip
+	reverse_proxy 127.0.0.1:4000
+}

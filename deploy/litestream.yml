@@ -1,0 +1,12 @@
+# /etc/litestream.yml — continuous SQLite backup to S3-compatible storage
+# (Backblaze B2, Cloudflare R2, AWS S3...). Restore with:
+#   litestream restore -o /opt/keradrive/data/keradrive.db s3://BUCKET/keradrive
+dbs:
+  - path: /opt/keradrive/data/keradrive.db
+    replicas:
+      - type: s3
+        bucket: YOUR_BUCKET
+        path: keradrive
+        endpoint: https://s3.YOUR_REGION.backblazeb2.com
+        access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
+        secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}

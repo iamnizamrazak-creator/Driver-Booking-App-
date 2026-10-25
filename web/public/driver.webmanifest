@@ -1,0 +1,16 @@
+{
+  "name": "KeraDrive Partner",
+  "short_name": "KD Partner",
+  "description": "Driver app for KeraDrive partners.",
+  "id": "/driver/",
+  "start_url": "/driver/",
+  "scope": "/driver/",
+  "display": "standalone",
+  "background_color": "#fbf7ec",
+  "theme_color": "#2a1b3d",
+  "icons": [
+    { "src": "/icons/icon-driver-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-driver-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-driver-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
