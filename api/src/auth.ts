@@ -71,7 +71,7 @@ export function isAdmin(user: UserRow) {
   return (
     config.adminEmails.includes(email) ||
     (!!config.adminUsername && email === passwordAdminEmail(config.adminUsername)) ||
-    (config.devLogin && email.startsWith('admin@'))
+    (config.devLoginAdmin && email.startsWith('admin@'))
   );
 }
 

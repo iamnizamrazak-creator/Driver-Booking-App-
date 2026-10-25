@@ -117,7 +117,7 @@ export function Login({ app, config, onDone }: { app: AppName; config: PublicCon
           </>
         )}
 
-        {config.devLogin && (
+        {config.devLogin && !passwordLogin && (
           <form
             className="stack"
             onSubmit={(e) => {

@@ -73,7 +73,7 @@ authRoutes.post('/auth/dev', (req, res) => {
   const email = str(req.body, 'email', { label: 'Email' }).toLowerCase();
   if (!/^\S+@\S+\.\S+$/.test(email)) throw new HttpError(400, 'Enter a valid email');
   const user = upsertUser({ sub: null, email, name: email.split('@')[0], picture: null });
-  if (app === 'admin' && !isAdmin(user)) throw new HttpError(403, 'In dev login, admin emails start with admin@');
+  if (app === 'admin' && !isAdmin(user)) throw new HttpError(403, config.devLoginAdmin ? 'In dev login, admin emails start with admin@' : 'Use the admin username and password');
   startSession(res, user.id, app);
   res.json(me(user));
 });

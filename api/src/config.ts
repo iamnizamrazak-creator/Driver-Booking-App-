@@ -25,6 +25,9 @@ export const config = {
   },
   // Dev login and mock payments are refused in production no matter what the env says.
   devLogin: !isProd && env.DEV_LOGIN === 'true',
+  // Lets dev-login emails starting with admin@ open the dashboard. Turn off on any
+  // server reachable from the internet (e.g. a trial on a bare IP).
+  devLoginAdmin: !isProd && env.DEV_LOGIN === 'true' && env.DEV_LOGIN_ADMIN !== 'false',
   get mockPayments() {
     return !isProd && !this.razorpay.keyId;
   },
