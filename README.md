@@ -76,7 +76,7 @@ Default pricing (editable in Ops → Pricing): ₹350 for the first 2 hours, the
 
 ### 1. Google sign-in
 1. https://console.cloud.google.com/apis/credentials → Create credentials → OAuth client ID → **Web application**.
-2. Authorized JavaScript origins: `https://app.example.in` (and `http://localhost:5173` for dev).
+2. Authorized JavaScript origins: `https://keradrive.nizamrazak.tech` (and `http://localhost:5173` for dev).
 3. Set `GOOGLE_CLIENT_ID` in `api/.env`, and set `ADMIN_EMAILS` to your Google email(s).
 
 ### 2. Admin password
@@ -89,7 +89,7 @@ Type the password twice (it isn't shown on screen), then paste the printed `ADMI
 ### 3. Razorpay
 1. Dashboard → Account & Settings → API keys. Start with **test** keys (`rzp_test_…`).
 2. Settings → Payment capture → **Automatic capture**.
-3. Webhooks → add `https://app.example.in/api/webhooks/razorpay`, events `payment.captured` and `order.paid`, and set a secret. Put it in `RAZORPAY_WEBHOOK_SECRET`.
+3. Webhooks → add `https://keradrive.nizamrazak.tech/api/webhooks/razorpay`, events `payment.captured` and `order.paid`, and set a secret. Put it in `RAZORPAY_WEBHOOK_SECRET`.
 4. Switch to live keys after KYC is approved.
 
 ### 4. Ubuntu VPS
@@ -112,7 +112,7 @@ sudo systemctl reload caddy
 Production `api/.env`:
 ```
 NODE_ENV=production
-APP_URL=https://app.example.in
+APP_URL=https://keradrive.nizamrazak.tech
 DATABASE_PATH=/opt/keradrive/data/keradrive.db
 GOOGLE_CLIENT_ID=...
 ADMIN_EMAILS=you@gmail.com
@@ -129,7 +129,7 @@ In production the server refuses to start without Google and Razorpay keys, and 
 
 **Updates**: `ssh root@<server> /opt/keradrive/app/deploy/deploy.sh` (pulls, tests, builds, restarts).
 
-**Current trial server**: `http://187.77.136.7` (Hostinger KVM 2, Kuala Lumpur), running with `NODE_ENV=staging`, dev login on, dashboard admin shortcut off, mock payments. Nightly SQLite snapshots in `/opt/keradrive/backups` (14 days, same machine; add Litestream for off-site).
+**Current trial server**: https://keradrive.nizamrazak.tech (Hostinger KVM 2 at `187.77.136.7`, Kuala Lumpur). DNS A/AAAA records are in Hostinger DNS; Caddy renews the Let's Encrypt certificate automatically, and the bare IP redirects to the domain. Runs with `NODE_ENV=staging`: dev login on, dashboard admin shortcut off, mock payments. Nightly SQLite snapshots in `/opt/keradrive/backups` (14 days, same machine; add Litestream for off-site).
 
 ## Known MVP limits (deliberate)
 

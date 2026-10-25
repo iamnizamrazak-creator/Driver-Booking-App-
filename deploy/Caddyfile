@@ -1,6 +1,16 @@
-# /etc/caddy/Caddyfile — Caddy gets and renews HTTPS certificates automatically.
-# Point your domain's A record at the VPS first.
-app.example.in {
+# /etc/caddy/Caddyfile. Caddy obtains and renews HTTPS certificates automatically.
+# The domain's A/AAAA records must point at the VPS first.
+{
+	email you@example.com
+}
+
+keradrive.nizamrazak.tech {
 	encode gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Frame-Options "DENY"
+	}
 	reverse_proxy 127.0.0.1:4000
 }
