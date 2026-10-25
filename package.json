@@ -11,8 +11,7 @@
     "typecheck": "tsc -p api --noEmit && tsc -p web --noEmit",
     "test": "node --test shared/*.test.ts",
     "admin:password": "node api/scripts/hash-password.ts",
-    "account:create": "node --env-file-if-exists=api/.env api/scripts/create-account.ts",
-    "demo:seed": "node --env-file-if-exists=api/.env api/scripts/seed-demo.ts"
+    "account:create": "node --env-file-if-exists=api/.env api/scripts/create-account.ts"
   },
   "devDependencies": {
     "concurrently": "^9.1.0",

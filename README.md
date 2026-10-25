@@ -95,14 +95,6 @@ sudo -u keradrive npm run -s account:create -- --role driver --email rajesh@exam
 ```
 Running it again for the same email resets the password. Drivers created this way are approved immediately.
 
-### Demo data
-Fill the database with Kochi demo customers, cars, drivers (approved and pending) and a week of paid, rated trips:
-```bash
-sudo -u keradrive npm run -s demo:seed               # load once
-sudo -u keradrive npm run -s demo:seed -- --remove   # remove it all before launch
-```
-Demo people use `@demo.keradrive` emails and sign in only through the quick test login.
-
 ### 3. Razorpay
 1. Dashboard → Account & Settings → API keys. Start with **test** keys (`rzp_test_…`).
 2. Settings → Payment capture → **Automatic capture**.
