@@ -70,7 +70,8 @@ const server = http.createServer(app);
 initRealtime(server);
 startRedispatchLoop();
 server.listen(config.port, () => {
-  console.log(`KeraDrive API on http://localhost:${config.port} (${config.isProd ? 'production' : 'development'})`);
-  if (config.devLogin) console.log('  Dev login is ON. Admin emails must start with admin@');
+  console.log(`KeraDrive API on http://localhost:${config.port} (${process.env.NODE_ENV ?? 'development'})`);
+  if (config.devLogin) console.log(`  Dev login is ON.${config.devLoginAdmin ? ' Admin emails must start with admin@' : ' Dashboard needs the admin password.'}`);
+  if (!config.adminPasswordHash && config.adminUsername) console.log('  ADMIN_PASSWORD_HASH is missing: run `npm run admin:password`');
   if (config.mockPayments) console.log('  Razorpay keys missing: using mock payments');
 });
