@@ -36,7 +36,7 @@ app.use(express.json({ limit: '100kb' }));
 // Browsers send Origin on cross-site POSTs; reject anything not from our own app (CSRF guard on top of SameSite=Lax).
 app.use('/api', (req, res, next) => {
   const origin = req.header('origin');
-  if (req.method !== 'GET' && origin && config.isProd && origin !== config.appUrl) {
+  if (req.method !== 'GET' && origin && config.https && origin !== config.appUrl) {
     return next(new HttpError(403, 'Bad origin'));
   }
   next();

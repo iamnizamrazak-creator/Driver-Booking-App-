@@ -10,6 +10,10 @@ export const config = {
   webDist: path.resolve(import.meta.dirname, '../../web/dist'),
   city: env.CITY ?? 'Kochi',
   appUrl: env.APP_URL ?? 'http://localhost:5173',
+  // Served over HTTPS (any deployed server): secure cookies and same-origin checks.
+  get https() {
+    return this.appUrl.startsWith('https://');
+  },
   googleClientId: env.GOOGLE_CLIENT_ID || null,
   // Username/password login for the ops dashboard. Generate the hash with `npm run admin:password`.
   adminUsername: (env.ADMIN_USERNAME ?? '').trim().toLowerCase() || null,

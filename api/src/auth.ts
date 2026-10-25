@@ -136,7 +136,7 @@ export function startSession(res: Response, userId: number, app: AppName) {
   res.cookie(cookieName(app), token, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: config.isProd,
+    secure: config.https,
     expires: new Date(expires),
     path: '/',
   });
