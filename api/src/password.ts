@@ -15,3 +15,6 @@ export function verifyPassword(password: string, stored: string) {
   const actual = crypto.scryptSync(password, Buffer.from(saltB64, 'base64'), expected.length);
   return crypto.timingSafeEqual(actual, expected);
 }
+
+// Checked when the account doesn't exist, so unknown emails take as long as wrong passwords.
+export const DUMMY_HASH = hashPassword('not-a-real-password');

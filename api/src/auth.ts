@@ -16,6 +16,7 @@ export interface UserRow {
   name: string;
   phone: string | null;
   avatar_url: string | null;
+  password_hash: string | null;
 }
 
 export interface DriverRow {

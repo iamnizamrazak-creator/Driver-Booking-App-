@@ -10,7 +10,8 @@
     "start": "npm run start -w api",
     "typecheck": "tsc -p api --noEmit && tsc -p web --noEmit",
     "test": "node --test shared/*.test.ts",
-    "admin:password": "node api/scripts/hash-password.ts"
+    "admin:password": "node api/scripts/hash-password.ts",
+    "account:create": "node --env-file-if-exists=api/.env api/scripts/create-account.ts"
   },
   "devDependencies": {
     "concurrently": "^9.1.0",

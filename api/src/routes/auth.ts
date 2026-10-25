@@ -19,7 +19,7 @@ import {
   type UserRow,
 } from '../auth.ts';
 import { driverRating } from '../bookings.ts';
-import { verifyPassword } from '../password.ts';
+import { DUMMY_HASH, verifyPassword } from '../password.ts';
 import { config } from '../config.ts';
 import { one, run } from '../db.ts';
 import { phone, str } from '../validate.ts';
@@ -34,6 +34,7 @@ authRoutes.get('/config', (_req, res) => {
     razorpayKeyId: config.razorpay.keyId,
     mockPayments: config.mockPayments,
     adminPasswordLogin: !!(config.adminUsername && config.adminPasswordHash),
+    passwordLogin: true,
   };
   res.json(body);
 });
@@ -47,23 +48,34 @@ authRoutes.post('/auth/google', async (req, res) => {
   res.json(me(user));
 });
 
+// Admin: the single account from ADMIN_USERNAME / ADMIN_PASSWORD_HASH.
+// Customer & driver apps: accounts whose users.password_hash was set by `npm run account:create`.
 authRoutes.post('/auth/password', (req, res) => {
-  if (appFrom(req.header('x-app')) !== 'admin' || !config.adminUsername || !config.adminPasswordHash) {
-    throw new HttpError(404, 'Not found');
-  }
+  const app = appFrom(req.header('x-app'));
+  if (app === 'admin' && (!config.adminUsername || !config.adminPasswordHash)) throw new HttpError(404, 'Not found');
   const ip = req.ip ?? 'unknown';
   checkLoginAllowed(ip);
-  const username = str(req.body, 'username', { max: 64, label: 'Username' }).toLowerCase();
+  const username = str(req.body, 'username', { max: 254, label: 'Username' }).toLowerCase();
   const password = str(req.body, 'password', { max: 200, label: 'Password' });
-  // Always run the hash check, so a wrong username takes as long as a wrong password.
-  const passwordOk = verifyPassword(password, config.adminPasswordHash);
-  if (username !== config.adminUsername || !passwordOk) {
+
+  let user: UserRow | undefined;
+  if (app === 'admin') {
+    // Always run the hash check, so a wrong username takes as long as a wrong password.
+    const passwordOk = verifyPassword(password, config.adminPasswordHash!);
+    if (username === config.adminUsername && passwordOk) {
+      user = upsertUser({ sub: null, email: passwordAdminEmail(username), name: username, picture: null });
+    }
+  } else {
+    const row = one<UserRow>('SELECT * FROM users WHERE email = ?', username);
+    const passwordOk = verifyPassword(password, row?.password_hash ?? DUMMY_HASH);
+    if (row?.password_hash && passwordOk) user = row;
+  }
+  if (!user) {
     recordLoginFailure(ip);
     throw new HttpError(401, 'Wrong username or password');
   }
   clearLoginFailures(ip);
-  const user = upsertUser({ sub: null, email: passwordAdminEmail(username), name: username, picture: null });
-  startSession(res, user.id, 'admin');
+  startSession(res, user.id, app);
   res.json(me(user));
 });
 
@@ -72,8 +84,11 @@ authRoutes.post('/auth/dev', (req, res) => {
   const app = appFrom(req.header('x-app'));
   const email = str(req.body, 'email', { label: 'Email' }).toLowerCase();
   if (!/^\S+@\S+\.\S+$/.test(email)) throw new HttpError(400, 'Enter a valid email');
+  // Check admin rights before creating anything, so refused attempts leave no account behind.
+  if (app === 'admin' && !isAdmin({ email } as UserRow)) {
+    throw new HttpError(403, config.devLoginAdmin ? 'In dev login, admin emails start with admin@' : 'Use the admin username and password');
+  }
   const user = upsertUser({ sub: null, email, name: email.split('@')[0], picture: null });
-  if (app === 'admin' && !isAdmin(user)) throw new HttpError(403, config.devLoginAdmin ? 'In dev login, admin emails start with admin@' : 'Use the admin username and password');
   startSession(res, user.id, app);
   res.json(me(user));
 });

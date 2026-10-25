@@ -86,6 +86,15 @@ npm run admin:password
 ```
 Type the password twice (it isn't shown on screen), then paste the printed `ADMIN_PASSWORD_HASH=…` line into `api/.env` and restart the server. Run this on the VPS too, or copy the line there. After 10 failed attempts from one IP, sign-in is blocked for 15 minutes.
 
+### Customer & driver accounts with a password
+Ops can create accounts that sign in with email + password (handy before Google sign-in is set up, or for staff and test accounts). Run as the app user on the server; it prints a new password once:
+```bash
+cd /opt/keradrive/app
+sudo -u keradrive npm run -s account:create -- --role customer --email anu@example.com --name "Anu Thomas" --phone 9847012345
+sudo -u keradrive npm run -s account:create -- --role driver --email rajesh@example.com --name "Rajesh Kumar" --phone 9946054321
+```
+Running it again for the same email resets the password. Drivers created this way are approved immediately.
+
 ### 3. Razorpay
 1. Dashboard → Account & Settings → API keys. Start with **test** keys (`rzp_test_…`).
 2. Settings → Payment capture → **Automatic capture**.

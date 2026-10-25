@@ -120,6 +120,8 @@ const migrations: string[] = [
     value TEXT NOT NULL
   );
   `,
+  // Email + password sign-in for customer/driver accounts created by ops.
+  `ALTER TABLE users ADD COLUMN password_hash TEXT;`,
 ];
 
 function migrate() {

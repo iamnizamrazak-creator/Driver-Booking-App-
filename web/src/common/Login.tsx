@@ -42,7 +42,9 @@ export function Login({ app, config, onDone }: { app: AppName; config: PublicCon
   const [email, setEmail] = useState(app === 'admin' ? 'admin@example.com' : '');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const passwordLogin = app === 'admin' && config.adminPasswordLogin;
+  const passwordLogin = app === 'admin' ? config.adminPasswordLogin : config.passwordLogin;
+  // The admin dashboard never offers dev login once a real admin password exists.
+  const showDevLogin = config.devLogin && !(app === 'admin' && passwordLogin);
   const copy = COPY[app];
 
   useEffect(() => {
@@ -87,8 +89,8 @@ export function Login({ app, config, onDone }: { app: AppName; config: PublicCon
 
         {passwordLogin && (
           <form className="stack" onSubmit={(e) => e.preventDefault()}>
-            <Field label="Email or username">
-              <input className="input" value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" autoCapitalize="none" />
+            <Field label={app === 'admin' ? 'Email or username' : 'Email'}>
+              <input className="input" value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" autoCapitalize="none" inputMode="email" />
             </Field>
             <Field label="Password">
               <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
@@ -117,18 +119,18 @@ export function Login({ app, config, onDone }: { app: AppName; config: PublicCon
           </>
         )}
 
-        {config.devLogin && !passwordLogin && (
+        {showDevLogin && (
           <form
             className="stack"
             onSubmit={(e) => {
               e.preventDefault();
             }}
           >
-            {(config.googleClientId || passwordLogin) && <div className="faint center">or, for local testing</div>}
-            <Field label="Dev login (no Google needed)" hint={`Development only. ${copy.devHint}`}>
+            {(config.googleClientId || passwordLogin) && <div className="faint center">or, for testing</div>}
+            <Field label="Quick test login (email only, no password)" hint={`Trial mode only. ${copy.devHint}`}>
               <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={copy.devHint} autoComplete="off" />
             </Field>
-            <AsyncButton className="btn block lg" type="submit" onClick={async () => onDone(await api<Me>('/auth/dev', { body: { email } }))}>
+            <AsyncButton className={passwordLogin ? 'btn ghost block' : 'btn block lg'} type="submit" onClick={async () => onDone(await api<Me>('/auth/dev', { body: { email } }))}>
               Continue
             </AsyncButton>
           </form>

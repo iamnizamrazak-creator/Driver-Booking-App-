@@ -99,4 +99,6 @@ export interface PublicConfig {
   mockPayments: boolean;
   /** Ops dashboard offers username/password sign-in. */
   adminPasswordLogin: boolean;
+  /** Customer/driver apps offer email + password sign-in. */
+  passwordLogin: boolean;
 }
