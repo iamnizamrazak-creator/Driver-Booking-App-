@@ -98,10 +98,11 @@ Type the password twice (it isn't shown on screen), then paste the printed `ADMI
 curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash - && sudo apt install -y nodejs
 # Caddy (automatic HTTPS): https://caddyserver.com/docs/install#debian-ubuntu-raspbian
 
-sudo useradd --system --home /opt/keradrive keradrive
-sudo git clone <your-repo> /opt/keradrive && sudo chown -R keradrive /opt/keradrive
-cd /opt/keradrive && cp api/.env.example api/.env   # then edit it (see below)
-npm ci && npm run build
+sudo useradd --system --create-home --home-dir /opt/keradrive keradrive
+sudo -u keradrive git clone https://github.com/iamnizamrazak-creator/Driver-Booking-App-.git /opt/keradrive/app
+sudo -u keradrive mkdir -p /opt/keradrive/data
+cd /opt/keradrive/app && sudo -u keradrive cp api/.env.example api/.env   # then edit it (see below)
+sudo -u keradrive npm ci && sudo -u keradrive npm run build
 
 sudo cp deploy/keradrive.service /etc/systemd/system/ && sudo systemctl enable --now keradrive
 sudo cp deploy/Caddyfile /etc/caddy/Caddyfile        # set your domain
@@ -112,7 +113,7 @@ Production `api/.env`:
 ```
 NODE_ENV=production
 APP_URL=https://app.example.in
-DATABASE_PATH=../data/keradrive.db
+DATABASE_PATH=/opt/keradrive/data/keradrive.db
 GOOGLE_CLIENT_ID=...
 ADMIN_EMAILS=you@gmail.com
 ADMIN_USERNAME=you@gmail.com
@@ -126,7 +127,9 @@ In production the server refuses to start without Google and Razorpay keys, and 
 
 **Backups**: install [Litestream](https://litestream.io/install/) with `deploy/litestream.yml`. It streams every SQLite write to cheap object storage, so losing the VPS doesn't lose bookings.
 
-**Updates**: `git pull && ./deploy/deploy.sh`.
+**Updates**: `ssh root@<server> /opt/keradrive/app/deploy/deploy.sh` (pulls, tests, builds, restarts).
+
+**Current trial server**: `http://187.77.136.7` (Hostinger KVM 2, Kuala Lumpur), running with `NODE_ENV=staging`, dev login on, dashboard admin shortcut off, mock payments. Nightly SQLite snapshots in `/opt/keradrive/backups` (14 days, same machine; add Litestream for off-site).
 
 ## Known MVP limits (deliberate)
 

@@ -6,11 +6,10 @@ After=network.target
 [Service]
 Type=simple
 User=keradrive
-WorkingDirectory=/opt/keradrive/api
-ExecStart=/usr/bin/node --env-file=/opt/keradrive/api/.env src/server.ts
+WorkingDirectory=/opt/keradrive/app/api
+ExecStart=/usr/bin/node --env-file=/opt/keradrive/app/api/.env src/server.ts
 Restart=always
 RestartSec=3
-Environment=NODE_ENV=production
 # Hardening
 NoNewPrivileges=true
 ProtectSystem=full
